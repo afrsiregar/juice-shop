@@ -1,5 +1,5 @@
-FROM node:22 AS installer
-COPY . /juice-shop
+# FROM node:22 AS installer
+# COPY . /juice-shop
 WORKDIR /juice-shop
 RUN npm i -g typescript ts-node
 RUN npm install --omit=dev --unsafe-perm
@@ -38,4 +38,24 @@ WORKDIR /juice-shop
 COPY --from=installer --chown=65532:0 /juice-shop .
 USER 65532
 EXPOSE 3000
-CMD ["/juice-shop/build/app.js"]
+
+# Jalankan server
+CMD ["npm", "start"]
+
+# CMD ["/juice-shop/build/app.js"]
+
+# Build Juice Shop
+RUN npm run build
+
+# Salin seluruh project ke container
+COPY . .
+
+# Install dependencies
+RUN npm install
+
+
+# Salin package.json dan package-lock.json
+COPY package*.json ./
+
+# Gunakan image Node versi LTS
+FROM node:20
